@@ -1,6 +1,5 @@
 import sys
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_login import LoginManager
 
@@ -9,8 +8,6 @@ from base.auth.auth import User
 from base.auth.routes import blueprint as auth_blueprint
 from base.command import CommandRunner
 from base.stock.routes import blueprint as stock_blueprint
-
-load_dotenv()
 
 app = Flask(__name__)
 auth_manager = LoginManager()

@@ -12,6 +12,7 @@ class Config(BaseSettings):
 
     # MongoDB
     MONGODB_URI: str
+    MONGODB_STOCK_DB_NAME: str
 
     # Email settings
     EMAIL_HOST_USER: str
