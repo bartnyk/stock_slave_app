@@ -1,6 +1,6 @@
 import sys
 
-from flask import Flask as _Flask
+from flask import Flask
 from flask_login import LoginManager
 
 from base import cfg
@@ -8,12 +8,6 @@ from base.auth.auth import User
 from base.auth.routes import blueprint as auth_blueprint
 from base.command import CommandRunner
 from base.stock.routes import blueprint as stock_blueprint
-
-
-class Flask(_Flask):
-    def logger(self):
-        return cfg.logger.app
-
 
 app = Flask(__name__)
 auth_manager = LoginManager()

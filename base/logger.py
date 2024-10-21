@@ -27,6 +27,7 @@ class Logger:
                     "level": "DEBUG",
                     "formatter": "default",
                     "filename": self._dir_path / "app.log",
+                    "encoding": "utf-8",
                 },
                 "console": {
                     "class": "logging.StreamHandler",
@@ -38,15 +39,23 @@ class Logger:
                     "level": "DEBUG",
                     "formatter": "default",
                     "filename": self._dir_path / "stock.log",
+                    "encoding": "utf-8",
                 },
                 "command_file": {
                     "class": "logging.FileHandler",
                     "level": "DEBUG",
                     "formatter": "default",
                     "filename": self._dir_path / "command.log",
+                    "encoding": "utf-8",
+                },
+                "wsgi": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://flask.logging.wsgi_errors_stream",
+                    "formatter": "default",
                 },
             },
             "loggers": {
+                "root": {"level": "INFO", "handlers": ["wsgi", "app_file"]},
                 "app": {
                     "level": "DEBUG",
                     "handlers": ["app_file", "console"],
