@@ -1,6 +1,7 @@
 from abc import ABC
 
 from pymongo import MongoClient
+from pymongo.cursor import Cursor
 from pymongo.database import Collection, Database
 
 from base.database.client import Mongo
@@ -19,11 +20,11 @@ class BaseRepository(ABC):
     def collection(self) -> Collection:
         return self._collection
 
-    def get(self, query: dict) -> dict:
+    def get(self, query: dict) -> Cursor:
         return self.collection.find_one(query)
 
-    def get_all(self, query: dict = {}) -> list:
-        return list(self.collection.find(query))
+    def get_all(self, query: dict = {}) -> Cursor:
+        return self.collection.find(query)
 
     def insert(self, data: dict) -> None:
         self.collection.insert_one(data)

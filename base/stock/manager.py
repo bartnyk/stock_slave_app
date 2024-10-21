@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from pymongo import DESCENDING
+
 from base import cfg
 from base.mailing.client import EmailClient
 from base.stock.repository import StockRepository
@@ -49,7 +51,7 @@ class StockManager:
         self._email_client.send_email(message)
 
     def get_saved_recommendations(self) -> StockRecommendationList:
-        recommendations = self._repository.get_all()
+        recommendations = self._repository.get_all().sort("title", DESCENDING)
         return StockRecommendationList.parse(recommendations)
 
     def send_email_action_timeout(self) -> None:
