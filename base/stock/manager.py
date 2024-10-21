@@ -6,6 +6,8 @@ from base.stock.repository import StockRepository
 from base.stock.schemas import StockRecommendation, StockRecommendationList
 from base.stock.scrapper import StockScrapper
 
+logger = cfg.stock_logger
+
 
 class StockManager:
     def __init__(self):
@@ -25,6 +27,7 @@ class StockManager:
             if self._recommendation_exists(recommendation.id):
                 continue
 
+            logger.info(f"New recommendation found: {recommendation.title}")
             self._repository.insert(recommendation.model_dump())
 
             if not silent:
@@ -46,9 +49,11 @@ class StockManager:
         return StockRecommendationList.parse(recommendations)
 
     def send_email_action_timeout(self) -> None:
+        msg = f"Recommendation fetching timed out [{datetime.now().strftime('%Y-%m-%d %H:%M')}]"
+        logger.error(msg)
         self._email_client.send_email(
             self._email_client.create_message(
-                subject=f"Recommendation fetching timed out [{datetime.now().strftime('%Y-%m-%d %H:%M')}]",
+                subject=msg,
                 body="Fetching recommendations took too long.",
             )
         )

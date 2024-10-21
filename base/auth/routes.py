@@ -1,7 +1,15 @@
 from urllib.parse import urljoin, urlparse
 
-from flask import Blueprint, flash, redirect, request, url_for
-from flask_login import login_required, login_user
+from flask import (
+    Blueprint,
+    flash,
+    get_flashed_messages,
+    redirect,
+    render_template_string,
+    request,
+    url_for,
+)
+from flask_login import login_user
 
 from base import cfg
 
@@ -28,26 +36,29 @@ def login():
         if username == username_env and password == password_env:
             user = User(username=username)
             login_user(user)
-
-            # Get the next page (if available) after login
             next_page = request.args.get("next")
             if next_page and is_safe_url(next_page):
                 return redirect(next_page)
-            return redirect(url_for("home"))
+            return redirect(url_for("index"))
         else:
             flash("Invalid credentials")
-            return redirect(url_for("login"))
-
-    return """
+            return redirect(url_for("auth.login"))
+    return render_template_string(
+        """
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
         <form method="post">
             Username: <input type="text" name="username"><br>
             Password: <input type="password" name="password"><br>
             <input type="submit" value="Login">
         </form>
-    """
-
-
-@blueprint.route("/", methods=["GET", "POST"])
-@login_required
-def home():
-    return "Hello, World!"
+    """,
+        messages=get_flashed_messages(),
+    )
