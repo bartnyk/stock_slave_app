@@ -6,7 +6,7 @@ from base.stock.repository import StockRepository
 from base.stock.schemas import StockRecommendation, StockRecommendationList
 from base.stock.scrapper import StockScrapper
 
-logger = cfg.stock_logger
+logger = cfg.logger.stock
 
 
 class StockManager:
@@ -21,6 +21,7 @@ class StockManager:
         return bool(self._repository.get({"id": recommendation_id}))
 
     def scrap_recommendations(self, silent: bool = False) -> None:
+        any_new = False
         recommendations: StockRecommendationList = self._scrapper.get_recommendations()
 
         for recommendation in recommendations:
@@ -29,9 +30,12 @@ class StockManager:
 
             logger.info(f"New recommendation found: {recommendation.title}")
             self._repository.insert(recommendation.model_dump())
-
+            any_new = True
             if not silent:
                 self._send_email_with_recommendation(recommendation)
+
+        if not any_new:
+            logger.info("No new recommendations found.")
 
     def _send_email_with_recommendation(
         self, recommendation: StockRecommendation

@@ -5,7 +5,9 @@ from base.stock.manager import StockManager
 
 
 def fetch_recommendations(silent: bool = False):
-    cfg.stock_logger.info(f"Fetch recommendations command started [silent = {silent}].")
+    cfg.logger.command.info(
+        f"Fetch recommendations command started [silent = {silent}]."
+    )
 
     manager = StockManager()
 
@@ -14,4 +16,5 @@ def fetch_recommendations(silent: bool = False):
     try:
         future.result(timeout=60)  # Timeout of 60 seconds
     except TimeoutError:
+        cfg.logger.command.error("Recommendation fetching timed out.")
         manager.send_email_action_timeout()

@@ -9,12 +9,10 @@ from base.auth.routes import blueprint as auth_blueprint
 from base.command import CommandRunner
 from base.stock.routes import blueprint as stock_blueprint
 
-logger = cfg.logger
-
 
 class Flask(_Flask):
     def logger(self):
-        return cfg.logger
+        return cfg.logger.app
 
 
 app = Flask(__name__)
@@ -42,12 +40,12 @@ def index():
 
 def run():
     if len(sys.argv) > 1:
-        logger.info("Attempting to run command: '%s'", sys.argv[1])
+        cfg.logger.command.info("Attempting to run command: '%s'", sys.argv[1])
         command = CommandRunner(sys.argv[1])
         command.run()
     else:
         app.run()
-        logger.info("App started successfully, ")
+        cfg.logger.app.info("App started successfully, ")
 
 
 if __name__ == "__main__":
